@@ -9,4 +9,8 @@ class AppRepository {
 
   final RemoteDataSource remoteDataSource;
   final LocalDataSource localDataSource;
+
+  void getCities() async {
+    print(await remoteDataSource.getCitiesSuggestion('Брест'));
+  }
 }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_test/core/constants/request_data.dart';
 import 'package:weather_test/domain/entity/city.dart';
@@ -19,19 +18,16 @@ class RemoteDataSource {
         RequestData.languageRequestKey +
         RequestData.defaultLanguage);
 
-    debugPrint('GET $uri');
     final response = await httpClient.get(uri);
-    final responseJson =
-        jsonDecode(response.body) as List<Map<String, dynamic>>;
-    debugPrint('Response $responseJson');
-    return filterCitiesByCountry(responseJson);
+    final responseJson = jsonDecode(response.body) as List<dynamic>;
+    return _filterCitiesByCountry(responseJson);
   }
 
   Future<List<String>> getForecast() async {
     return [];
   }
 
-  List<City> filterCitiesByCountry(List<Map<String, dynamic>> response) {
+  List<City> _filterCitiesByCountry(List<dynamic> response) {
     final filteredCities = response.map((cityJson) {
       if (cityJson[CityResponse.countryKey][CityResponse.countryIDKey] ==
           CityResponse.defaultCountryID) {

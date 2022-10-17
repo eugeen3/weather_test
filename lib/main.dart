@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_test/core/injection/service_locator.dart';
+import 'package:weather_test/presentation/cubit/app_cubit.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
   runApp(const MyApp());
 }
@@ -28,23 +31,35 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: onTap,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    return BlocProvider(
+      create: (context) => sl<AppCubit>(),
+      child: BlocConsumer<AppCubit, AppState>(
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(title),
+            ),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const <Widget>[],
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => onTap(context),
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            ),
+          );
+        },
       ),
     );
   }
 
-  void onTap() {}
+  void onTap(BuildContext context) {
+    context.read<AppCubit>().getCities();
+  }
 }

@@ -5,9 +5,11 @@ import 'package:weather_test/data/repository/app_repository.dart';
 part 'app_state.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit({
-    required this.appRepository,
-  }) : super(AppInitial());
+  AppCubit(this._appRepository) : super(AppInitial());
 
-  final AppRepository appRepository;
+  final AppRepository _appRepository;
+
+  getCities() {
+    _appRepository.getCities();
+  }
 }

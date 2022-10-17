@@ -24,5 +24,5 @@ Future<void> initDependencies() async {
     localDataSource: sl(),
   ));
 
-  sl.registerSingleton<AppCubit>(AppCubit(appRepository: sl()));
+  sl.registerSingleton<AppCubit>(AppCubit(sl()));
 }
