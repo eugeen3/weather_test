@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_test/core/injection/service_locator.dart';
 import 'package:weather_test/presentation/cubit/app_cubit.dart';
+import 'package:weather_test/presentation/ui/widgets/city_search_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ class MyHomePage extends StatelessWidget {
       create: (context) => sl<AppCubit>(),
       child: BlocConsumer<AppCubit, AppState>(
         listener: (context, state) {
-          // TODO: implement listener
+          print(state);
         },
         builder: (context, state) {
           return Scaffold(
@@ -44,22 +45,22 @@ class MyHomePage extends StatelessWidget {
             ),
             body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[],
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CitySearchField(
+                      initVal: 'Минск',
+                      pickCity: context.read<AppCubit>().cityChanged,
+                      suggestionsCallback: context.read<AppCubit>().getCities,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => onTap(context),
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
             ),
           );
         },
       ),
     );
-  }
-
-  void onTap(BuildContext context) {
-    context.read<AppCubit>().getCities();
   }
 }

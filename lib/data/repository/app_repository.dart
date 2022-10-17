@@ -1,5 +1,6 @@
 import 'package:weather_test/data/datasource/local_datasource.dart';
 import 'package:weather_test/data/datasource/remote_datasource.dart';
+import 'package:weather_test/domain/entity/city.dart';
 
 class AppRepository {
   AppRepository({
@@ -10,7 +11,7 @@ class AppRepository {
   final RemoteDataSource remoteDataSource;
   final LocalDataSource localDataSource;
 
-  void getCities() async {
-    print(await remoteDataSource.getCitiesSuggestion('Брест'));
+  Future<List<City>> getCities(String query) {
+    return remoteDataSource.getCitiesSuggestion(query);
   }
 }

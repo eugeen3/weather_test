@@ -1,10 +1,33 @@
 part of 'app_cubit.dart';
 
-abstract class AppState extends Equatable {
-  const AppState();
+class AppState extends Equatable {
+  const AppState({
+    this.currentCity,
+    this.isLoading = true,
+    this.error,
+    this.cityQuery,
+  });
+
+  final City? currentCity;
+  final bool isLoading;
+  final String? error;
+  final String? cityQuery;
+
+  AppState copyWith({
+    City? currentCity,
+    bool? isLoading,
+    String? error,
+  }) {
+    return AppState(
+      currentCity: currentCity ?? this.currentCity,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+    );
+  }
 
   @override
-  List<Object> get props => [];
-}
+  List<Object?> get props => [currentCity, isLoading, error];
 
-class AppInitial extends AppState {}
+  @override
+  bool get stringify => true;
+}
