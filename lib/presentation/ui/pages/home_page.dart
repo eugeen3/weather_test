@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_test/core/injection/service_locator.dart';
+import 'package:weather_test/core/utils/snackbar.dart';
 import 'package:weather_test/presentation/cubit/app_cubit.dart';
 import 'package:weather_test/presentation/ui/widgets/city_search_widget.dart';
 import 'package:weather_test/presentation/ui/widgets/current_forecast.dart';
+import 'package:weather_test/presentation/ui/widgets/daily_forecast.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.title});
@@ -21,6 +23,9 @@ class MyHomePage extends StatelessWidget {
             debugPrint('need to update forecasts');
 
             context.read<AppCubit>().updateForecasts(state.currentCity!);
+          }
+          if (state.error != null) {
+            showSnackbar(context, state.error!);
           }
         },
         buildWhen: (previous, current) => previous != current,
@@ -58,18 +63,14 @@ class MyHomePage extends StatelessWidget {
                     Column(
                       children: [
                         CurrentForecast(forecast: state.forecasts.first),
-                        ...state.forecasts
-                            .skip(1)
-                            .map((forecast) => Column(
-                                  children: [
-                                    Text(forecast.date.toString()),
-                                    Text(forecast.temperature.toString()),
-                                    Text(forecast.feelsLike.toString()),
-                                    Text(forecast.humidity.toString()),
-                                    Text(forecast.windSpeed.toString()),
-                                  ],
-                                ))
-                            .toList(),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: state.forecasts
+                              .skip(1)
+                              .map((forecast) => DailyForecast(forecast: forecast))
+                              .toList(),
+                        ),
                       ],
                     ),
                 ],

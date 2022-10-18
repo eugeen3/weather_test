@@ -30,9 +30,14 @@ class MyApp extends StatelessWidget {
             fontSize: 18,
             fontWeight: FontWeight.w500,
           )),
-          bodyText1: GoogleFonts.nunitoSans(
+          subtitle2: GoogleFonts.nunitoSans(
               textStyle: const TextStyle(
-            fontSize: 24,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          )),
+          bodyText1: GoogleFonts.nunito(
+              textStyle: const TextStyle(
+            fontSize: 14,
             fontWeight: FontWeight.w500,
           )),
         ),

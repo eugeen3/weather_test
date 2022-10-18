@@ -63,15 +63,18 @@ class _AdditionalInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textstyle = Theme.of(context).textTheme.bodyText1;
+    final textstyle = Theme.of(context).textTheme.subtitle2;
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(title, style: textstyle),
         const SizedBox(width: 8),
         Text(value, style: textstyle),
-        Text(' ', style: textstyle),
-        Text(value, style: textstyle),
+        if (units != null) ...[
+          Text(' ', style: textstyle),
+          Text(units!, style: textstyle),
+        ]
       ],
     );
   }
