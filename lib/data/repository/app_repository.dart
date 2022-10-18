@@ -1,3 +1,5 @@
+// ignore_for_file: void_checks
+
 import 'package:dartz/dartz.dart';
 import 'package:weather_test/core/exception/exception.dart';
 import 'package:weather_test/core/exception/failure.dart';
@@ -15,8 +17,7 @@ class AppRepository {
   final RemoteDataSource _remoteDataSource;
   final LocalDataSource _localDataSource;
 
-  Future<Either<ServerFailure, List<City>>> getRemoteCities(
-      String query) async {
+  Future<Either<ServerFailure, List<City>>> getRemoteCities(String query) async {
     try {
       final cities = await _remoteDataSource.getCitiesSuggestion(query);
       return Right(cities);
@@ -25,8 +26,7 @@ class AppRepository {
     }
   }
 
-  Future<Either<ServerFailure, List<Forecast>>> getRemoteForecasts(
-      City city) async {
+  Future<Either<ServerFailure, List<Forecast>>> getRemoteForecasts(City city) async {
     try {
       final forecasts = await _remoteDataSource.getForecasts(city);
       return Right(forecasts);
@@ -48,6 +48,25 @@ class AppRepository {
     try {
       final forecasts = await _localDataSource.getForecasts();
       return Right(forecasts);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
+
+  Future<Either<CacheFailure, void>> saveCity(City city) async {
+    try {
+      await _localDataSource.saveCity(city);
+      return Right(Future.value());
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
+
+  Future<Either<CacheFailure, void>> saveForecasts(List<Forecast> forecasts) async {
+    try {
+      await _localDataSource.saveForecasts(forecasts);
+
+      return Right(Future.value());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_test/core/constants/strings.dart';
 import 'package:weather_test/core/injection/service_locator.dart';
+import 'package:weather_test/presentation/cubit/app_cubit.dart';
 import 'package:weather_test/presentation/ui/pages/home_page.dart';
 
 void main() async {
@@ -42,7 +44,10 @@ class MyApp extends StatelessWidget {
           )),
         ),
       ),
-      home: const MyHomePage(title: StringContsants.homePageTitle),
+      home: BlocProvider(
+        create: (context) => sl<AppCubit>(),
+        child: const MyHomePage(title: StringContsants.homePageTitle),
+      ),
     );
   }
 }

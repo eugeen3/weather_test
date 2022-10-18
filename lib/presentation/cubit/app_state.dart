@@ -4,36 +4,31 @@ class AppState extends Equatable {
   const AppState({
     this.currentCity,
     this.previousCity,
-    this.isLoading = true,
-    this.error,
+    this.message,
     this.forecasts = const [],
   });
 
   final City? currentCity;
   final City? previousCity;
-  final bool isLoading;
-  final String? error;
+  final String? message;
   final List<Forecast> forecasts;
 
   AppState copyWith({
     City? currentCity,
     City? previousCity,
-    bool? isLoading,
-    String? error,
+    String? message,
     List<Forecast>? forecasts,
   }) {
     return AppState(
       currentCity: currentCity ?? this.currentCity,
       previousCity: previousCity ?? this.previousCity,
-      isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      message: message ?? message,
       forecasts: forecasts ?? this.forecasts,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [currentCity, previousCity, isLoading, error, forecasts];
+  List<Object?> get props => [currentCity, previousCity, message, forecasts];
 
   @override
   bool get stringify => true;

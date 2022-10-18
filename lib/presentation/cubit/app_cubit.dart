@@ -26,28 +26,31 @@ class AppCubit extends Cubit<AppState> {
     final remoteForecasts = await _appRepository.getRemoteForecasts(city);
     remoteForecasts.fold(
       (error) => debugPrint(error.message),
-      (forecasts) => emit(state.copyWith(forecasts: forecasts)),
+      (forecasts) {
+        emit(state.copyWith(forecasts: forecasts, message: StringContsants.forecastsUpdated));
+        _appRepository.saveForecasts(forecasts);
+      },
     );
   }
 
-  void cityChanged(City city) =>
-      emit(state.copyWith(currentCity: city, previousCity: state.currentCity));
+  void cityChanged(City city) {
+    emit(state.copyWith(currentCity: city, previousCity: state.currentCity, message: null));
+    _appRepository.saveCity(city);
+  }
 
   void getDataOnLaunch() async {
-    emit(state.copyWith(isLoading: true));
     final savedCity = await _appRepository.getSavedCity();
     final savedForecasts = await _appRepository.getSavedForecasts();
     String? savedCityError;
     String? savedForecastsError;
-    bool savedForecastsShown = false;
 
     savedCity.fold(
       (error) {
         savedCityError = StringContsants.savedCityError;
         debugPrint(error.message);
-        emit(state.copyWith(error: savedCityError));
+        emit(state.copyWith(message: savedCityError));
       },
-      (city) => emit(state.copyWith(currentCity: city)),
+      (city) => emit(state.copyWith(currentCity: city, message: null)),
     );
 
     savedForecasts.fold(
@@ -56,38 +59,37 @@ class AppCubit extends Cubit<AppState> {
         debugPrint(error.message);
       },
       (forecasts) {
-        if (forecasts.first.date == DateTime.now()) {
-          emit(state.copyWith(forecasts: forecasts));
-          savedForecastsShown = true;
+        if (forecasts.first.date.day == DateTime.now().day) {
+          emit(state.copyWith(forecasts: forecasts, message: null));
         }
       },
     );
 
-    if (savedForecastsError == null && savedForecastsShown) {
-      emit(state.copyWith(isLoading: false));
-    }
+    Future.delayed(const Duration(seconds: 2));
 
     if (savedCityError == null) {
-      final newForecasts =
-          await _appRepository.getRemoteForecasts(state.currentCity!);
+      final newForecasts = await _appRepository.getRemoteForecasts(state.currentCity!);
       newForecasts.fold(
         (error) {
           if (savedForecastsError != null) {
             debugPrint(error.message);
             emit(state.copyWith(
-              error:
+              message:
                   '${StringContsants.savedForecastsError} ${StringContsants.remoteForecastsError}',
             ));
           } else {
             debugPrint(error.message);
-            emit(state.copyWith(error: StringContsants.remoteForecastsError));
+            emit(state.copyWith(message: StringContsants.remoteForecastsError));
           }
         },
-        (newForcasts) => emit(state.copyWith(forecasts: newForcasts)),
+        (newForcasts) => emit(state.copyWith(
+          forecasts: newForcasts,
+          message: StringContsants.forecastsUpdated,
+        )),
       );
     } else {
       debugPrint(StringContsants.savedCityError);
-      emit(state.copyWith(error: StringContsants.savedCityError));
+      emit(state.copyWith(message: StringContsants.savedCityError));
     }
   }
 }
