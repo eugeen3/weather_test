@@ -21,7 +21,7 @@ class DailyForecast extends StatelessWidget {
           style: textTheme.headline1?.copyWith(fontSize: 16),
         ),
         Text(
-          '${forecast.temperature.ceil()} ${StringContsants.celciumSign}',
+          '${forecast.temperature} ${StringContsants.celciumSign}',
           style: textTheme.subtitle1?.copyWith(fontSize: 18),
         ),
       ],

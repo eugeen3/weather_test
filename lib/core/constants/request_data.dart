@@ -1,8 +1,6 @@
 abstract class RequestData {
-  static const String citySearchBaseURL =
-      'http://api.openweathermap.org/geo/1.0/direct';
-  static const String forecastBaseURL =
-      'https://api.openweathermap.org/data/2.5/forecast';
+  static const String citySearchBaseURL = 'http://api.openweathermap.org/geo/1.0/direct';
+  static const String forecastBaseURL = 'https://api.openweathermap.org/data/2.5/forecast';
   static const String apiKey = '15012b653b24cfbe43a598e29c0118bf';
   static const String apiRequestKey = '&appid=';
   static const String cityRequestKey = '?q=';
@@ -30,9 +28,4 @@ abstract class ForecastResponse {
   static const String date = 'dt_txt';
   static const String mainInfo = 'main';
   static const String temperature = 'temp';
-  static const String feelsLike = 'feels_like';
-  static const String pressure = 'pressure';
-  static const String humidity = 'humidity';
-  static const String windInfo = 'wind';
-  static const String windSpeed = 'speed';
 }

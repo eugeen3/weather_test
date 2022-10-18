@@ -35,50 +35,116 @@ class MyHomePage extends StatelessWidget {
             appBar: AppBar(
               title: Text(title),
             ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            body: OrientationBuilder(
+              builder: (context, orientation) => orientation == Orientation.portrait
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Icon(Icons.location_city),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          child: CitySearchField(
-                            initVal: 'Минск',
-                            pickCity: context.read<AppCubit>().cityChanged,
-                            suggestionsCallback: context.read<AppCubit>().getCities,
+                        const _SearchFieldPortrait(),
+                        if (state.forecasts.isNotEmpty)
+                          Column(
+                            children: [
+                              CurrentForecast(forecast: state.forecasts.first),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: state.forecasts
+                                    .skip(1)
+                                    .map((forecast) => DailyForecast(forecast: forecast))
+                                    .toList(),
+                              ),
+                            ],
                           ),
-                        ),
                       ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              const _SearchFieldLandscape(),
+                              if (state.forecasts.isNotEmpty) ...[
+                                const Spacer(),
+                                CurrentForecast(forecast: state.forecasts.first),
+                              ]
+                            ],
+                          ),
+                          if (state.forecasts.isNotEmpty)
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: state.forecasts
+                                    .skip(1)
+                                    .map((forecast) => DailyForecast(forecast: forecast))
+                                    .toList(),
+                              ),
+                            )
+                        ],
+                      ),
                     ),
-                  ),
-                  if (state.forecasts.isNotEmpty)
-                    Column(
-                      children: [
-                        CurrentForecast(forecast: state.forecasts.first),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: state.forecasts
-                              .skip(1)
-                              .map((forecast) => DailyForecast(forecast: forecast))
-                              .toList(),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+class _SearchFieldPortrait extends StatelessWidget {
+  const _SearchFieldPortrait({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.location_city),
+          const SizedBox(
+            width: 12,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: CitySearchField(
+              initVal: 'Минск',
+              pickCity: context.read<AppCubit>().cityChanged,
+              suggestionsCallback: context.read<AppCubit>().getCities,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchFieldLandscape extends StatelessWidget {
+  const _SearchFieldLandscape({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.location_city),
+        const SizedBox(
+          width: 12,
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.4,
+          child: CitySearchField(
+            initVal: 'Минск',
+            pickCity: context.read<AppCubit>().cityChanged,
+            suggestionsCallback: context.read<AppCubit>().getCities,
+          ),
+        ),
+      ],
     );
   }
 }

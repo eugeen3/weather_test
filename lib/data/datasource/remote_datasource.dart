@@ -42,8 +42,6 @@ class RemoteDataSource {
         filteredForcasts.add(todaysForecast);
 
         int currentDay = todaysForecast.date.day;
-
-        final stopwatch = Stopwatch()..start();
         for (int i = 0, addedDays = 0; i < allForecasts.length && addedDays < days; i++) {
           if (allForecasts[i].date.day != currentDay &&
               allForecasts[i].date.hour == hourForNextDaysForecasts) {
@@ -51,12 +49,11 @@ class RemoteDataSource {
             addedDays++;
           }
         }
-        print('doSomething() executed in ${stopwatch.elapsed}');
-
         return filteredForcasts;
       }
     } catch (e) {
-      throw ServerException(message: 'RemoteDataSource getForecasts() exception: ${e.runtimeType}');
+      throw ServerException(
+          message: 'RemoteDataSource getForecasts() exception: ${e.runtimeType}, $e');
     }
   }
 
