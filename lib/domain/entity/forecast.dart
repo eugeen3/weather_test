@@ -16,16 +16,16 @@ class Forecast extends Equatable {
   final DateTime date;
   final double temperature;
   final double feelsLike;
-  final double pressure;
-  final double humidity;
+  final int pressure;
+  final int humidity;
   final double windSpeed;
 
   Forecast copyWith({
     DateTime? date,
     double? temperature,
     double? feelsLike,
-    double? pressure,
-    double? humidity,
+    int? pressure,
+    int? humidity,
     double? windSpeed,
   }) {
     return Forecast(
@@ -55,8 +55,8 @@ class Forecast extends Equatable {
           map[ForecastResponse.date] as int),
       temperature: map[ForecastResponse.temperature] as double,
       feelsLike: map[ForecastResponse.feelsLike] as double,
-      pressure: map[ForecastResponse.pressure] as double,
-      humidity: map[ForecastResponse.humidity] as double,
+      pressure: map[ForecastResponse.pressure] as int,
+      humidity: map[ForecastResponse.humidity] as int,
       windSpeed:
           map['${ForecastResponse.windInfo}${ForecastResponse.windSpeed}']
               as double,
@@ -65,16 +65,15 @@ class Forecast extends Equatable {
 
   factory Forecast.fromMapResponse(Map<String, dynamic> map) {
     return Forecast(
-      date: DateTime.fromMillisecondsSinceEpoch(
-          map[ForecastResponse.date] as int),
+      date: DateTime.parse(map[ForecastResponse.date] as String),
       temperature: map[ForecastResponse.mainInfo][ForecastResponse.temperature]
           as double,
       feelsLike:
           map[ForecastResponse.mainInfo][ForecastResponse.feelsLike] as double,
       pressure:
-          map[ForecastResponse.mainInfo][ForecastResponse.pressure] as double,
+          map[ForecastResponse.mainInfo][ForecastResponse.pressure] as int,
       humidity:
-          map[ForecastResponse.mainInfo][ForecastResponse.humidity] as double,
+          map[ForecastResponse.mainInfo][ForecastResponse.humidity] as int,
       windSpeed:
           map[ForecastResponse.windInfo][ForecastResponse.windSpeed] as double,
     );

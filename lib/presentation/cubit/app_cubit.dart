@@ -22,19 +22,30 @@ class AppCubit extends Cubit<AppState> {
     return citiesList;
   }
 
-  void cityChanged(City city) => emit(state.copyWith(currentCity: city));
+  void updateForecasts(City city) async {
+    final remoteForecasts = await _appRepository.getRemoteForecasts(city);
+    remoteForecasts.fold(
+      (error) => debugPrint(error.message),
+      (forecasts) => emit(state.copyWith(forecasts: forecasts)),
+    );
+  }
 
-  void getData() async {
+  void cityChanged(City city) =>
+      emit(state.copyWith(currentCity: city, previousCity: state.currentCity));
+
+  void getDataOnLaunch() async {
     emit(state.copyWith(isLoading: true));
     final savedCity = await _appRepository.getSavedCity();
     final savedForecasts = await _appRepository.getSavedForecasts();
+    String? savedCityError;
     String? savedForecastsError;
     bool savedForecastsShown = false;
 
     savedCity.fold(
       (error) {
+        savedCityError = StringContsants.savedCityError;
         debugPrint(error.message);
-        emit(state.copyWith(error: StringContsants.savedCityError));
+        emit(state.copyWith(error: savedCityError));
       },
       (city) => emit(state.copyWith(currentCity: city)),
     );
@@ -56,21 +67,27 @@ class AppCubit extends Cubit<AppState> {
       emit(state.copyWith(isLoading: false));
     }
 
-    final newForecasts = await _appRepository.getRemoteForecasts();
-    newForecasts.fold(
-      (error) {
-        if (savedForecastsError != null) {
-          debugPrint(error.message);
-          emit(state.copyWith(
-            error:
-                '${StringContsants.savedForecastsError} ${StringContsants.remoteForecastsError}',
-          ));
-        } else {
-          debugPrint(error.message);
-          emit(state.copyWith(error: StringContsants.remoteForecastsError));
-        }
-      },
-      (newForcasts) => emit(state.copyWith(forecasts: newForcasts)),
-    );
+    if (savedCityError == null) {
+      final newForecasts =
+          await _appRepository.getRemoteForecasts(state.currentCity!);
+      newForecasts.fold(
+        (error) {
+          if (savedForecastsError != null) {
+            debugPrint(error.message);
+            emit(state.copyWith(
+              error:
+                  '${StringContsants.savedForecastsError} ${StringContsants.remoteForecastsError}',
+            ));
+          } else {
+            debugPrint(error.message);
+            emit(state.copyWith(error: StringContsants.remoteForecastsError));
+          }
+        },
+        (newForcasts) => emit(state.copyWith(forecasts: newForcasts)),
+      );
+    } else {
+      debugPrint(StringContsants.savedCityError);
+      emit(state.copyWith(error: StringContsants.savedCityError));
+    }
   }
 }

@@ -37,6 +37,12 @@ class MyHomePage extends StatelessWidget {
       child: BlocConsumer<AppCubit, AppState>(
         listener: (context, state) {
           debugPrint(state.toString());
+          if (state.currentCity != state.previousCity &&
+              state.currentCity != null) {
+            debugPrint('need to update forecasts');
+
+            context.read<AppCubit>().updateForecasts(state.currentCity!);
+          }
         },
         buildWhen: (previous, current) => previous != current,
         builder: (context, state) {
@@ -56,17 +62,23 @@ class MyHomePage extends StatelessWidget {
                       suggestionsCallback: context.read<AppCubit>().getCities,
                     ),
                   ),
-                  ...state.forecasts
-                      .map((forecast) => Column(
-                            children: [
-                              Text(forecast.date.toString()),
-                              Text(forecast.temperature.toString()),
-                              Text(forecast.feelsLike.toString()),
-                              Text(forecast.humidity.toString()),
-                              Text(forecast.windSpeed.toString()),
-                            ],
-                          ))
-                      .toList(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(children: [
+                        ...state.forecasts
+                            .map((forecast) => Column(
+                                  children: [
+                                    Text(forecast.date.toString()),
+                                    Text(forecast.temperature.toString()),
+                                    Text(forecast.feelsLike.toString()),
+                                    Text(forecast.humidity.toString()),
+                                    Text(forecast.windSpeed.toString()),
+                                  ],
+                                ))
+                            .toList(),
+                      ]),
+                    ),
+                  ),
                 ],
               ),
             ),

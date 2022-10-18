@@ -25,12 +25,13 @@ class AppRepository {
     }
   }
 
-  Future<Either<CacheFailure, List<Forecast>>> getRemoteForecasts() async {
+  Future<Either<ServerFailure, List<Forecast>>> getRemoteForecasts(
+      City city) async {
     try {
-      final forecasts = await _remoteDataSource.getForecasts();
+      final forecasts = await _remoteDataSource.getForecasts(city);
       return Right(forecasts);
-    } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
     }
   }
 

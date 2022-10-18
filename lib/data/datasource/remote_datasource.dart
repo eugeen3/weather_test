@@ -11,9 +11,36 @@ class RemoteDataSource {
 
   final http.Client _httpClient;
 
-  Future<List<Forecast>> getForecasts() async {
+  Future<List<Forecast>> getForecasts(City city, [int days = 3]) async {
+    final forecastsCount = days * RequestData.amountOfForecastsForOneDay;
+
     try {
-      return [];
+      final uri = Uri.parse(
+        RequestData.forecastBaseURL +
+            RequestData.latKey +
+            city.lat.toString() +
+            RequestData.lonKey +
+            city.lon.toString() +
+            RequestData.unitsKey +
+            RequestData.defaultUnits +
+            RequestData.amountOfForecasts +
+            forecastsCount.toString() +
+            RequestData.apiRequestKey +
+            RequestData.apiKey,
+      );
+
+      final response = await _httpClient.get(uri);
+      final responseJson = jsonDecode(response.body);
+      final responseListJson =
+          responseJson[ForecastResponse.listName] as List<dynamic>;
+
+      if (responseListJson.isEmpty) {
+        return [];
+      } else {
+        return responseListJson
+            .map((forecastJson) => Forecast.fromMapResponse(forecastJson))
+            .toList();
+      }
     } catch (e) {
       throw ServerException(
           message:
@@ -35,7 +62,6 @@ class RemoteDataSource {
             RequestData.apiKey,
       );
 
-      print(uri);
       final response = await _httpClient.get(uri);
       final responseJson = jsonDecode(response.body) as List<dynamic>;
       if (responseJson.isEmpty) {
