@@ -5,7 +5,7 @@ abstract class RequestData {
       'https://api.openweathermap.org/data/3.0/onecall';
   static const String apiKey = '15012b653b24cfbe43a598e29c0118bf';
   static const String apiRequestKey = '&appid=';
-  static const String cityRequestKey = '&q=';
+  static const String cityRequestKey = '?q=';
   static const String defaultCountryID = 'BY';
   static const String limitRequestKey = '&limit=';
   static const String defaultLimit = '5';
@@ -16,6 +16,19 @@ abstract class CityResponse {
   static const String localNames = 'local_names';
   static const String locale = 'ru';
   static const String name = 'name';
+  static const String state = 'state';
   static const String lat = 'lat';
   static const String lon = 'lon';
+}
+
+abstract class ForecastResponse {
+  static const String listName = 'list';
+  static const String date = 'dt';
+  static const String mainInfo = 'main';
+  static const String temperature = 'temp';
+  static const String feelsLike = 'feels_like';
+  static const String pressure = 'pressure';
+  static const String humidity = 'humidity';
+  static const String windInfo = 'wind';
+  static const String windSpeed = 'speed';
 }

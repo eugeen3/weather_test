@@ -14,7 +14,7 @@ class LocalDataSource {
 
   Future<City> getCity() async {
     try {
-      return const City(name: '', lat: 2, lon: 2);
+      return const City(name: '', lat: 2, lon: 2, state: '');
     } catch (e) {
       throw CacheException(
           message: 'LocalDataSource getCity() exception: ${e.runtimeType}');

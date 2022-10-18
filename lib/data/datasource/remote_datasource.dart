@@ -29,16 +29,21 @@ class RemoteDataSource {
             query +
             RequestData.querySeparator +
             RequestData.defaultCountryID +
+            RequestData.limitRequestKey +
+            RequestData.defaultLimit +
             RequestData.apiRequestKey +
             RequestData.apiKey,
       );
 
+      print(uri);
       final response = await _httpClient.get(uri);
       final responseJson = jsonDecode(response.body) as List<dynamic>;
       if (responseJson.isEmpty) {
         return [];
       } else {
-        return responseJson.map((cityJson) => City.fromMap(cityJson)).toList();
+        return responseJson
+            .map((cityJson) => City.fromMap(cityJson, fromRequest: true))
+            .toList();
       }
     } catch (e) {
       throw ServerException(

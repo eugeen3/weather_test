@@ -69,7 +69,7 @@ class _CitySearchFieldState extends State<CitySearchField> {
         return citiesList;
       },
       itemBuilder: (context, suggestion) {
-        return Text(suggestion.name);
+        return Text('${suggestion.name}, ${suggestion.state}');
       },
       onSuggestionSelected: (suggestion) {
         widget.pickCity(suggestion);

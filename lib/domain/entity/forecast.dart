@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:weather_test/core/constants/request_data.dart';
 
 class Forecast extends Equatable {
   const Forecast({
@@ -39,30 +40,47 @@ class Forecast extends Equatable {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'date': date.millisecondsSinceEpoch,
-      'temperature': temperature,
-      'feelsLike': feelsLike,
-      'pressure': pressure,
-      'humidity': humidity,
-      'windSpeed': windSpeed,
+      ForecastResponse.date: date.millisecondsSinceEpoch,
+      ForecastResponse.temperature: temperature,
+      ForecastResponse.feelsLike: feelsLike,
+      ForecastResponse.pressure: pressure,
+      ForecastResponse.humidity: humidity,
+      '${ForecastResponse.windInfo}${ForecastResponse.windSpeed}': windSpeed,
     };
   }
 
-  factory Forecast.fromMap(Map<String, dynamic> map) {
+  factory Forecast.fromMapLocal(Map<String, dynamic> map) {
     return Forecast(
-      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
-      temperature: map['temperature'] as double,
-      feelsLike: map['feelsLike'] as double,
-      pressure: map['pressure'] as double,
-      humidity: map['humidity'] as double,
-      windSpeed: map['windSpeed'] as double,
+      date: DateTime.fromMillisecondsSinceEpoch(
+          map[ForecastResponse.date] as int),
+      temperature: map[ForecastResponse.temperature] as double,
+      feelsLike: map[ForecastResponse.feelsLike] as double,
+      pressure: map[ForecastResponse.pressure] as double,
+      humidity: map[ForecastResponse.humidity] as double,
+      windSpeed:
+          map['${ForecastResponse.windInfo}${ForecastResponse.windSpeed}']
+              as double,
+    );
+  }
+
+  factory Forecast.fromMapResponse(Map<String, dynamic> map) {
+    return Forecast(
+      date: DateTime.fromMillisecondsSinceEpoch(
+          map[ForecastResponse.date] as int),
+      temperature: map[ForecastResponse.mainInfo][ForecastResponse.temperature]
+          as double,
+      feelsLike:
+          map[ForecastResponse.mainInfo][ForecastResponse.feelsLike] as double,
+      pressure:
+          map[ForecastResponse.mainInfo][ForecastResponse.pressure] as double,
+      humidity:
+          map[ForecastResponse.mainInfo][ForecastResponse.humidity] as double,
+      windSpeed:
+          map[ForecastResponse.windInfo][ForecastResponse.windSpeed] as double,
     );
   }
 
   String toJson() => json.encode(toMap());
-
-  factory Forecast.fromJson(String source) =>
-      Forecast.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   List<Object> get props {

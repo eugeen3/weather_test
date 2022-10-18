@@ -36,8 +36,9 @@ class MyHomePage extends StatelessWidget {
       create: (context) => sl<AppCubit>(),
       child: BlocConsumer<AppCubit, AppState>(
         listener: (context, state) {
-          print(state);
+          debugPrint(state.toString());
         },
+        buildWhen: (previous, current) => previous != current,
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -55,6 +56,17 @@ class MyHomePage extends StatelessWidget {
                       suggestionsCallback: context.read<AppCubit>().getCities,
                     ),
                   ),
+                  ...state.forecasts
+                      .map((forecast) => Column(
+                            children: [
+                              Text(forecast.date.toString()),
+                              Text(forecast.temperature.toString()),
+                              Text(forecast.feelsLike.toString()),
+                              Text(forecast.humidity.toString()),
+                              Text(forecast.windSpeed.toString()),
+                            ],
+                          ))
+                      .toList(),
                 ],
               ),
             ),
