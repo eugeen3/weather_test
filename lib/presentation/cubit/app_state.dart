@@ -17,11 +17,13 @@ class AppState extends Equatable {
     City? currentCity,
     bool? isLoading,
     String? error,
+    String? cityQuery,
   }) {
     return AppState(
       currentCity: currentCity ?? this.currentCity,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
+      cityQuery: cityQuery ?? this.cityQuery,
     );
   }
 

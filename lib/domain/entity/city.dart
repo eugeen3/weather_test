@@ -1,45 +1,44 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:weather_test/core/constants/request_data.dart';
 
 class City extends Equatable {
   const City({
     required this.name,
-    required this.key,
+    required this.lat,
+    required this.lon,
   });
 
   final String name;
-  final int key;
+  final double lat;
+  final double lon;
 
   City copyWith({
     String? name,
-    int? key,
+    double? lat,
+    double? lon,
   }) {
     return City(
       name: name ?? this.name,
-      key: key ?? this.key,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      CityResponse.localizedNameKey: name,
-      CityResponse.countryKeyKey: key,
+      'name': name,
+      'lat': lat,
+      'lon': lon,
     };
   }
 
   factory City.fromMap(Map<String, dynamic> map) {
     return City(
-      name: map[CityResponse.localizedNameKey] as String,
-      key: map[CityResponse.countryKeyKey] as int,
-    );
-  }
-
-  factory City.empty() {
-    return const City(
-      name: '',
-      key: 0,
+      name: map['name'] as String,
+      lat: map['lat'] as double,
+      lon: map['lon'] as double,
     );
   }
 
@@ -49,8 +48,8 @@ class City extends Equatable {
       City.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'City(name: $name, key: $key)';
+  List<Object> get props => [name, lat, lon];
 
   @override
-  List<Object?> get props => [name, key];
+  bool get stringify => true;
 }

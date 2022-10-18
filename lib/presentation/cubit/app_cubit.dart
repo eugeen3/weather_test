@@ -15,4 +15,6 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void cityChanged(City city) => emit(state.copyWith(currentCity: city));
+
+  void queryChanged(String query) => emit(state.copyWith(cityQuery: query));
 }
