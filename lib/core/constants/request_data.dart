@@ -8,13 +8,14 @@ abstract class RequestData {
   static const String cityRequestKey = '&q=';
   static const String defaultCountryID = 'BY';
   static const String limitRequestKey = '&limit=';
-  static const String defaultLimit5 = '5';
+  static const String defaultLimit = '5';
+  static const String querySeparator = ',';
 }
 
 abstract class CityResponse {
-  static const String defaultCountryID = 'BY';
-  static const String countryKey = 'Country';
-  static const String countryIDKey = 'ID';
-  static const String localizedNameKey = 'LocalizedName';
-  static const String countryKeyKey = 'Key';
+  static const String localNames = 'local_names';
+  static const String locale = 'ru';
+  static const String name = 'name';
+  static const String lat = 'lat';
+  static const String lon = 'lon';
 }

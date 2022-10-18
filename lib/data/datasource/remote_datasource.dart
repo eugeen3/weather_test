@@ -1,32 +1,45 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+import 'package:weather_test/core/constants/request_data.dart';
 import 'package:weather_test/core/exception/exception.dart';
 import 'package:weather_test/domain/entity/city.dart';
+import 'package:weather_test/domain/entity/forecast.dart';
 
 class RemoteDataSource {
   RemoteDataSource(this._httpClient);
 
   final http.Client _httpClient;
 
-  Future<List<String>> getForecast() async {
+  Future<List<Forecast>> getForecasts() async {
     try {
       return [];
     } catch (e) {
       throw ServerException(
           message:
-              'RemoteDataSource getForecast() exception: ${e.runtimeType}');
+              'RemoteDataSource getForecasts() exception: ${e.runtimeType}');
     }
   }
 
   Future<List<City>> getCitiesSuggestion(String query) async {
     try {
-      return [
-        const City(name: 'Брест', lat: 24, lon: 20),
-        const City(name: 'Витебск', lat: 22, lon: 20),
-        const City(name: 'Гомель', lat: 21, lon: 20),
-        const City(name: 'Гродно', lat: 26, lon: 20),
-        const City(name: 'Могилёв', lat: 25, lon: 20),
-        const City(name: 'Минск', lat: 23, lon: 20),
-      ];
+      final uri = Uri.parse(
+        RequestData.citySearchBaseURL +
+            RequestData.cityRequestKey +
+            query +
+            RequestData.querySeparator +
+            RequestData.defaultCountryID +
+            RequestData.apiRequestKey +
+            RequestData.apiKey,
+      );
+
+      final response = await _httpClient.get(uri);
+      final responseJson = jsonDecode(response.body) as List<dynamic>;
+      if (responseJson.isEmpty) {
+        return [];
+      } else {
+        return responseJson.map((cityJson) => City.fromMap(cityJson)).toList();
+      }
     } catch (e) {
       throw ServerException(
           message:

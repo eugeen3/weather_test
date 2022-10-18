@@ -15,7 +15,8 @@ class AppRepository {
   final RemoteDataSource _remoteDataSource;
   final LocalDataSource _localDataSource;
 
-  Future<Either<Failure, List<City>>> getCities(String query) async {
+  Future<Either<ServerFailure, List<City>>> getRemoteCities(
+      String query) async {
     try {
       final cities = await _remoteDataSource.getCitiesSuggestion(query);
       return Right(cities);
@@ -24,7 +25,16 @@ class AppRepository {
     }
   }
 
-  Future<Either<Failure, City>> getSavedCity() async {
+  Future<Either<CacheFailure, List<Forecast>>> getRemoteForecasts() async {
+    try {
+      final forecasts = await _remoteDataSource.getForecasts();
+      return Right(forecasts);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
+
+  Future<Either<CacheFailure, City>> getSavedCity() async {
     try {
       final city = await _localDataSource.getCity();
       return Right(city);
@@ -33,7 +43,7 @@ class AppRepository {
     }
   }
 
-  Future<Either<Failure, List<Forecast>>> getSavedForecasts() async {
+  Future<Either<CacheFailure, List<Forecast>>> getSavedForecasts() async {
     try {
       final forecasts = await _localDataSource.getForecasts();
       return Right(forecasts);

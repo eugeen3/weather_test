@@ -1,7 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:weather_test/core/constants/request_data.dart';
 
 class City extends Equatable {
   const City({
@@ -28,17 +28,19 @@ class City extends Equatable {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'name': name,
-      'lat': lat,
-      'lon': lon,
+      CityResponse.name: name,
+      CityResponse.lat: lat,
+      CityResponse.lon: lon,
     };
   }
 
-  factory City.fromMap(Map<String, dynamic> map) {
+  factory City.fromMap(Map<String, dynamic> map, {bool fromRequest = false}) {
     return City(
-      name: map['name'] as String,
-      lat: map['lat'] as double,
-      lon: map['lon'] as double,
+      name: fromRequest
+          ? map[CityResponse.localNames][CityResponse.locale] as String
+          : map[CityResponse.name],
+      lat: map[CityResponse.lat] as double,
+      lon: map[CityResponse.lon] as double,
     );
   }
 
