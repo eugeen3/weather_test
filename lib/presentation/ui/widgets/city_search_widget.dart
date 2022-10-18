@@ -31,26 +31,19 @@ class _CitySearchFieldState extends State<CitySearchField> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final textStyle = textTheme.subtitle1;
+
     return TypeAheadField(
       suggestionsBoxVerticalOffset: 5,
       hideSuggestionsOnKeyboardHide: true,
       textFieldConfiguration: TextFieldConfiguration(
         onChanged: (value) => {},
         controller: controller,
-        style: const TextStyle(
-          fontFamily: 'Roboto',
-          fontSize: 14,
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-        ),
-        decoration: const InputDecoration(
+        style: textStyle,
+        decoration: InputDecoration(
           hintText: 'Введите город',
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            fontFamily: 'Roboto',
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
+          hintStyle: textStyle,
         ),
       ),
       noItemsFoundBuilder: (context) {
@@ -69,7 +62,18 @@ class _CitySearchFieldState extends State<CitySearchField> {
         return citiesList;
       },
       itemBuilder: (context, suggestion) {
-        return Text('${suggestion.name}, ${suggestion.state}');
+        return ColoredBox(
+          color: Colors.amber,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              suggestion.state == null
+                  ? suggestion.name
+                  : '${suggestion.name}, ${suggestion.state}',
+              style: textStyle,
+            ),
+          ),
+        );
       },
       onSuggestionSelected: (suggestion) {
         widget.pickCity(suggestion);

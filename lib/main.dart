@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_test/core/constants/strings.dart';
 import 'package:weather_test/core/injection/service_locator.dart';
-import 'package:weather_test/presentation/cubit/app_cubit.dart';
-import 'package:weather_test/presentation/ui/widgets/city_search_widget.dart';
+import 'package:weather_test/presentation/ui/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,75 +16,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: StringContsants.appName,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.amber,
+        textTheme: TextTheme(
+          headline1: GoogleFonts.assistant(
+              textStyle: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          )),
+          subtitle1: GoogleFonts.nunito(
+              textStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          )),
+          bodyText1: GoogleFonts.nunitoSans(
+              textStyle: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
+          )),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<AppCubit>(),
-      child: BlocConsumer<AppCubit, AppState>(
-        listener: (context, state) {
-          debugPrint(state.toString());
-          if (state.currentCity != state.previousCity &&
-              state.currentCity != null) {
-            debugPrint('need to update forecasts');
-
-            context.read<AppCubit>().updateForecasts(state.currentCity!);
-          }
-        },
-        buildWhen: (previous, current) => previous != current,
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(title),
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CitySearchField(
-                      initVal: 'Минск',
-                      pickCity: context.read<AppCubit>().cityChanged,
-                      suggestionsCallback: context.read<AppCubit>().getCities,
-                    ),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(children: [
-                        ...state.forecasts
-                            .map((forecast) => Column(
-                                  children: [
-                                    Text(forecast.date.toString()),
-                                    Text(forecast.temperature.toString()),
-                                    Text(forecast.feelsLike.toString()),
-                                    Text(forecast.humidity.toString()),
-                                    Text(forecast.windSpeed.toString()),
-                                  ],
-                                ))
-                            .toList(),
-                      ]),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+      home: const MyHomePage(title: StringContsants.homePageTitle),
     );
   }
 }
