@@ -12,7 +12,7 @@ class RemoteDataSource {
   final http.Client _httpClient;
 
   Future<List<Forecast>> getForecasts(City city, [int days = 3]) async {
-    final forecastsCount = days * RequestData.amountOfForecastsForOneDay;
+    const int hourForNextDaysForecasts = 12;
 
     try {
       final uri = Uri.parse(
@@ -23,28 +23,40 @@ class RemoteDataSource {
             city.lon.toString() +
             RequestData.unitsKey +
             RequestData.defaultUnits +
-            RequestData.amountOfForecasts +
-            forecastsCount.toString() +
             RequestData.apiRequestKey +
             RequestData.apiKey,
       );
 
       final response = await _httpClient.get(uri);
       final responseJson = jsonDecode(response.body);
-      final responseListJson =
-          responseJson[ForecastResponse.listName] as List<dynamic>;
+      final responseListJson = responseJson[ForecastResponse.listName] as List<dynamic>;
 
       if (responseListJson.isEmpty) {
         return [];
       } else {
-        return responseListJson
-            .map((forecastJson) => Forecast.fromMapResponse(forecastJson))
-            .toList();
+        final allForecasts =
+            responseListJson.map((forecastJson) => Forecast.fromMapResponse(forecastJson)).toList();
+        final List<Forecast> filteredForcasts = [];
+
+        final todaysForecast = allForecasts.first;
+        filteredForcasts.add(todaysForecast);
+
+        int currentDay = todaysForecast.date.day;
+
+        final stopwatch = Stopwatch()..start();
+        for (int i = 0, addedDays = 0; i < allForecasts.length && addedDays < days; i++) {
+          if (allForecasts[i].date.day != currentDay &&
+              allForecasts[i].date.hour == hourForNextDaysForecasts) {
+            filteredForcasts.add(allForecasts[i]);
+            addedDays++;
+          }
+        }
+        print('doSomething() executed in ${stopwatch.elapsed}');
+
+        return filteredForcasts;
       }
     } catch (e) {
-      throw ServerException(
-          message:
-              'RemoteDataSource getForecasts() exception: ${e.runtimeType}');
+      throw ServerException(message: 'RemoteDataSource getForecasts() exception: ${e.runtimeType}');
     }
   }
 
@@ -67,14 +79,11 @@ class RemoteDataSource {
       if (responseJson.isEmpty) {
         return [];
       } else {
-        return responseJson
-            .map((cityJson) => City.fromMap(cityJson, fromRequest: true))
-            .toList();
+        return responseJson.map((cityJson) => City.fromMap(cityJson, fromRequest: true)).toList();
       }
     } catch (e) {
       throw ServerException(
-          message:
-              'RemoteDataSource getCitiesSuggestion() exception: ${e.runtimeType}');
+          message: 'RemoteDataSource getCitiesSuggestion() exception: ${e.runtimeType}');
     }
   }
 }

@@ -14,8 +14,6 @@ abstract class RequestData {
   static const String lonKey = '&lon=';
   static const String unitsKey = '&units=';
   static const String defaultUnits = 'metric';
-  static const String amountOfForecasts = '&cnt=';
-  static const int amountOfForecastsForOneDay = 8;
 }
 
 abstract class CityResponse {
