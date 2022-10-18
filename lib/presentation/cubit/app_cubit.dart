@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_test/data/repository/app_repository.dart';
 import 'package:weather_test/domain/entity/city.dart';
+import 'package:weather_test/domain/entity/forecast.dart';
 
 part 'app_state.dart';
 
@@ -16,5 +17,8 @@ class AppCubit extends Cubit<AppState> {
 
   void cityChanged(City city) => emit(state.copyWith(currentCity: city));
 
-  void queryChanged(String query) => emit(state.copyWith(cityQuery: query));
+  void getData() async {
+    final savedCity = await _appRepository.getSavedCity();
+    final savedForecasts = await _appRepository.getSavedForecasts();
+  }
 }

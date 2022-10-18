@@ -35,6 +35,7 @@ class _CitySearchFieldState extends State<CitySearchField> {
       suggestionsBoxVerticalOffset: 5,
       hideSuggestionsOnKeyboardHide: true,
       textFieldConfiguration: TextFieldConfiguration(
+        onChanged: (value) => {},
         controller: controller,
         style: const TextStyle(
           fontFamily: 'Roboto',

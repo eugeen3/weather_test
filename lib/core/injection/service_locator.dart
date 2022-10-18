@@ -15,13 +15,12 @@ Future<void> initDependencies() async {
   http.Client httpClient = http.Client();
   sl.registerSingleton<http.Client>(httpClient);
 
-  sl.registerSingleton<RemoteDataSource>(RemoteDataSource(httpClient: sl()));
-  sl.registerSingleton<LocalDataSource>(
-      LocalDataSource(sharedPreferences: sl()));
+  sl.registerSingleton<RemoteDataSource>(RemoteDataSource(sl()));
+  sl.registerSingleton<LocalDataSource>(LocalDataSource(sl()));
 
   sl.registerSingleton<AppRepository>(AppRepository(
-    remoteDataSource: sl(),
-    localDataSource: sl(),
+    sl(),
+    sl(),
   ));
 
   sl.registerSingleton<AppCubit>(AppCubit(sl()));
